@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luke User Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2E2A22;
+    --slate: #5F574A;
+    --paper: #FDFBF5;
+    --line: #E8E1D2;
+    --red: #C1392B;
+    --teal: #3F7C6E;
+    --orange: #E07A3E;
+    --mustard: #D9A22B;
+    --navy: #3C5A78;
+    --accent: var(--red);
+    --accent-soft: #FBE6E2;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--slate);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .stripe-bar {
+    height: 12px;
+    width: 100%;
+    display: flex;
+  }
+  .stripe-bar span { flex: 1; }
+
+  .page {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 20px 56px;
+  }
+
+  header.hero {
+    padding: 44px 0 20px;
+  }
+
+  .moon {
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 8vw, 2.5rem);
+    color: var(--ink);
+    margin: 0 0 10px;
+    line-height: 1.1;
+  }
+
+  header.hero p {
+    margin: 0;
+    max-width: 36ch;
+    line-height: 1.55;
+    font-size: 1.02rem;
+  }
+
+  nav.tabnav {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    display: flex;
+    gap: 8px;
+    padding: 14px 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--line);
+    z-index: 10;
+    scrollbar-width: none;
+  }
+  nav.tabnav::-webkit-scrollbar { display: none; }
+
+  .tab {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--slate);
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .tab[aria-selected="true"] {
+    background: var(--tab-color);
+    border-color: var(--tab-color);
+    color: #fff;
+  }
+  .tab:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  .panel { display: none; padding-top: 30px; }
+  .panel.active {
+    display: block;
+    animation: rise .28s ease;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .panel.active { animation: none; }
+  }
+
+  h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 1.4rem;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+
+  h3.subhead {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+    margin: 26px 0 8px;
+  }
+
+  .lede {
+    margin: 0 0 22px;
+    line-height: 1.55;
+  }
+
+  .callout {
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--ink);
+    font-size: 0.96rem;
+    line-height: 1.5;
+    margin: 0 0 22px;
+  }
+
+  .timeline { margin: 0 0 8px; }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-item time {
+    font-weight: 600;
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+  .timeline-item:nth-child(1) time { color: var(--orange); }
+  .timeline-item:nth-child(2) time { color: var(--teal); }
+  .timeline-item:nth-child(3) time { color: var(--navy); }
+  .timeline-item p { margin: 0; color: var(--ink); line-height: 1.5; }
+
+  .factrow {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.96rem;
+  }
+  .factrow:last-child { border-bottom: none; }
+  .factrow .label { color: var(--slate); }
+  .factrow .value { color: var(--ink); font-weight: 600; text-align: right; }
+
+  ol.steps {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+    margin: 0;
+  }
+  ol.steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  ol.steps li:last-child { border-bottom: none; }
+  ol.steps li::before {
+    content: counter(step);
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .watch-item {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 16px;
+    margin-bottom: 20px;
+  }
+  .watch-item h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+  .watch-item p { margin: 0; line-height: 1.55; }
+
+  #panel-overview { --accent: var(--red);     --accent-soft: #FBE6E2; }
+  #panel-luke     { --accent: var(--teal);    --accent-soft: #DEEDE8; }
+  #panel-red      { --accent: var(--mustard); --accent-soft: #FAEDCE; }
+  #panel-sos      { --accent: var(--red);     --accent-soft: #FBE6E2; }
+
+  #tab-overview { --tab-color: var(--red); }
+  #tab-luke     { --tab-color: var(--teal); }
+  #tab-red      { --tab-color: var(--mustard); }
+  #tab-sos      { --tab-color: var(--red); }
+
+  .bubble {
+    border: 2px solid var(--bubble);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .bubble > h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 1.18rem;
+    color: var(--bubble);
+    margin: 0 0 12px;
+  }
+  .bubble > p:last-child,
+  .bubble > ol:last-child,
+  .bubble > .watch-item:last-child { margin-bottom: 0; }
+  .bubble .lede { color: var(--slate); }
+
+  .bubble-food    { --bubble: var(--orange); }
+  .bubble-bedtime { --bubble: var(--navy); }
+  .bubble-fussy   { --bubble: var(--mustard); }
+  .bubble-watch   { --bubble: var(--teal); }
+  .bubble-basics  { --bubble: var(--red); }
+  .bubble-plan    { --bubble: var(--navy); }
+  .bubble-dog     { --bubble: var(--mustard); }
+
+  .bubble .watch-item { border-left-color: var(--bubble); }
+  .bubble .watch-item.danger {
+    border-left-color: var(--red);
+    border-left-width: 5px;
+  }
+  .watch-item.danger h3 { color: var(--red); }
+  .bubble ol.steps li::before { color: var(--bubble); }
+  .bubble .timeline-item time { color: var(--bubble); }
+  .bubble h3.subhead { margin-top: 20px; }
+
+  .sos-card {
+    border: 2px solid var(--red);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  .sos-card h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 0 0 10px;
+  }
+  .sos-card p { margin: 0 0 6px; line-height: 1.5; color: var(--ink); }
+  .sos-card p:last-child { margin-bottom: 0; }
+
+  a.call {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 1.12rem;
+    color: var(--red);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent-soft);
+    padding-bottom: 1px;
+  }
+
+  .fill {
+    background: #FFF3B0;
+    border-bottom: 1px dashed #B08900;
+    padding: 0 3px;
+    color: #6B5200;
+  }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="stripe-bar">
+  <span style="background:#C1392B"></span>
+  <span style="background:#E07A3E"></span>
+  <span style="background:#D9A22B"></span>
+  <span style="background:#3F7C6E"></span>
+  <span style="background:#3C5A78"></span>
+</div>
+<div class="page">
+
+  <header class="hero">
+    <svg class="moon" width="34" height="34" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="badgeClip"><circle cx="17" cy="17" r="17"/></clipPath>
+      </defs>
+      <g clip-path="url(#badgeClip)">
+        <rect width="34" height="34" fill="#FDFBF5"/>
+        <rect x="0" width="7" height="34" fill="#C1392B"/>
+        <rect x="14" width="7" height="34" fill="#3F7C6E"/>
+        <rect x="28" width="7" height="34" fill="#E07A3E"/>
+      </g>
+    </svg>
+    <h1>Luke User Manual</h1>
+  </header>
+
+  <nav class="tabnav" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview">Tonight</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-luke" id="tab-luke">Luke</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-red" id="tab-red">Red</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-sos" id="tab-sos">Emergency</button>
+  </nav>
+
+  <main>
+
+    <section class="panel active" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview">
+      <h2>Tonight</h2>
+
+      <div class="bubble bubble-plan">
+        <h3>The plan</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <time>5:30-6:30pm</time>
+            <p>Dinner. Details on the Luke tab.</p>
+          </div>
+          <div class="timeline-item">
+            <time>6:45-7pm</time>
+            <p>Head upstairs and start bedtime.</p>
+          </div>
+          <div class="timeline-item">
+            <time>Around 9pm</time>
+            <p>We're home.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bubble bubble-basics">
+        <h3>House basics</h3>
+        <div class="factrow">
+          <span class="label">Our address</span>
+          <span class="value">1862 W Grays Pl<br>Lehi, UT 84043</span>
+        </div>
+        <div class="factrow">
+          <span class="label">Laurel's cell</span>
+          <span class="value"><a href="tel:4358514175" style="color:inherit;text-decoration:none;">435-851-4175</a></span>
+        </div>
+        <div class="factrow">
+          <span class="label">Matt's cell</span>
+          <span class="value"><a href="tel:9515534533" style="color:inherit;text-decoration:none;">951-553-4533</a></span>
+        </div>
+        <div class="factrow">
+          <span class="label">Wifi network</span>
+          <span class="value">Mills Manor</span>
+        </div>
+        <div class="factrow">
+          <span class="label">Wifi password</span>
+          <span class="value">redsroomates</span>
+        </div>
+        <div class="factrow">
+          <span class="label">Baby monitor</span>
+          <span class="value">In the kitchen</span>
+        </div>
+        <div class="factrow">
+          <span class="label">Diapers and wipes</span>
+          <span class="value">His room, or under the TV<br>in the living room</span>
+        </div>
+      </div>
+
+      <div class="bubble bubble-fussy">
+        <h3>Make yourself at home</h3>
+        <p class="lede">Help yourself to anything in the pantry or the fridge. There are leftovers if you want dinner. Watch whatever you want.</p>
+        <p class="lede" style="margin-bottom:0;">We should be home around 9pm. Text us if you have any questions or can't find something.</p>
+      </div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-luke" aria-labelledby="tab-luke" hidden>
+      <h2>Luke</h2>
+
+      <div class="bubble bubble-food">
+        <h3>Food</h3>
+        <p class="lede">Dinner anytime between 5:30 and 6:30pm. Whatever timing works for you.</p>
+        <div class="factrow">
+          <span class="label">What to feed him</span>
+          <span class="value">Blue bento box, plus the<br>small bowl of Mexican rice</span>
+        </div>
+        <div class="factrow">
+          <span class="label">Where it is</span>
+          <span class="value">Both in the fridge</span>
+        </div>
+        <div class="factrow">
+          <span class="label">Heating</span>
+          <span class="value">Heat the rice. Check the<br>temperature before serving.</span>
+        </div>
+        <p class="lede" style="margin-top:16px;">He doesn't have to finish everything, but try to get as much into him as you can so he goes to bed with a full belly.</p>
+
+        <h3 class="subhead">Snacks</h3>
+        <p class="lede">The pantry has puffs, graham crackers, and cheddar bunnies. All fine to give him.</p>
+
+        <h3 class="subhead">Food safety</h3>
+        <ol class="steps">
+          <li>Break graham crackers and granola bars into small pieces he can't choke on.</li>
+          <li>No grapes.</li>
+          <li>Strap him into the high chair. He tries to crawl out.</li>
+          <li>Stay with him while he eats.</li>
+        </ol>
+        <p class="lede" style="margin-top:16px;margin-bottom:0;">If you're not sure whether something is okay to give him, or whether a piece is small enough, text us first.</p>
+      </div>
+
+      <div class="bubble bubble-bedtime">
+        <h3>Bedtime</h3>
+        <p class="lede">Start around 6:45-7pm. No bath tonight.</p>
+        <ol class="steps">
+          <li>Take him up to his room.</li>
+          <li>Change his diaper.</li>
+          <li>Put him in his pjs and sleep sack.</li>
+          <li>Read him a story, if you want to.</li>
+          <li>Grab the bottle of milk from the fridge.</li>
+          <li>Put him in his crib with the bottle. He falls asleep on his own.</li>
+          <li>His sound machine turns on by itself. Turn the fan on too.</li>
+        </ol>
+
+        <h3 class="subhead">After he's down</h3>
+        <p class="lede">Put Red's food and water bowls back on the floor so Red can get to them.</p>
+
+        <h3 class="subhead">If he wakes up</h3>
+        <ol class="steps">
+          <li>Try giving him more milk in his bottle.</li>
+          <li>Leave the room and shut the door.</li>
+          <li>If he keeps crying, text us. We'll tell you whether to take him out of his crib.</li>
+        </ol>
+      </div>
+
+      <div class="bubble bubble-fussy">
+        <h3>If he's fussy</h3>
+        <p class="lede" style="margin-bottom:0;">He's usually hungry, needs a diaper change, or is getting tired. Work through those three first.</p>
+      </div>
+
+      <div class="bubble bubble-watch">
+        <h3>Watch closely</h3>
+
+        <div class="watch-item danger">
+          <h3>The open kitchen door and the pool</h3>
+          <p>If the kitchen door is open for Red, do not let Luke out of your sight. He will crawl straight out and head for the pool.</p>
+          <p style="margin-top:8px;">While Luke is awake, the easiest thing is to keep the door shut and watch for Red to come back to it. Let him in when he does.</p>
+        </div>
+
+        <div class="watch-item">
+          <h3>Stairs</h3>
+          <p>He can crawl up but doesn't know how to come down. Don't leave him near them.</p>
+        </div>
+
+        <div class="watch-item">
+          <h3>Couch and ottoman</h3>
+          <p>He can usually get himself down, but he's still clumsy. Keep an eye on him.</p>
+        </div>
+
+        <div class="watch-item">
+          <h3>High chair</h3>
+          <p>Strap him in. He tries to crawl out.</p>
+        </div>
+
+        <div class="watch-item">
+          <h3>Red's food and water</h3>
+          <p>He loves getting into it. The bowls sit up on the counter while he's awake. Put them back down once he's asleep.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-red" aria-labelledby="tab-red" hidden>
+      <h2>Red</h2>
+
+      <div class="bubble bubble-dog">
+        <h3>He won't need much</h3>
+        <p class="lede">Red doesn't need anything from you tonight.</p>
+        <p class="lede">He might ask to go out in the backyard. That's fine.</p>
+        <p class="lede">If he's out playing and Luke is asleep, leave the kitchen door open so Red can come back in when he wants.</p>
+        <p class="lede" style="margin-bottom:0;">While Luke is awake, keep the door shut and watch for Red to come back to it. See the pool warning on the Luke tab.</p>
+      </div>
+
+      <div class="bubble bubble-plan">
+        <h3>Our basement tenants</h3>
+        <p class="lede">They live downstairs and have two small dogs.</p>
+        <p class="lede" style="margin-bottom:0;">If their dogs are out in the backyard, you can let Red out to play with them.</p>
+      </div>
+
+      <div class="bubble bubble-watch">
+        <h3>If he's in the way</h3>
+        <p class="lede" style="margin-bottom:0;">Put him in our room and shut the door. He's usually pretty chill, so you probably won't need to.</p>
+      </div>
+
+      <div class="bubble bubble-basics">
+        <h3>His bowls</h3>
+        <p class="lede" style="margin-bottom:0;">They stay on the counter while Luke is awake. Put them back on the floor once Luke is asleep.</p>
+      </div>
+    </section>
+
+    <section class="panel" role="tabpanel" id="panel-sos" aria-labelledby="tab-sos" hidden>
+      <h2>Emergency</h2>
+      <p class="lede">If something serious happens, call 911 first, then call us.</p>
+
+      <div class="sos-card">
+        <h3>Emergency</h3>
+        <p><a class="call" href="tel:911">911</a></p>
+        <p>Give the dispatcher this address:</p>
+        <p><strong>1862 W Grays Pl, Lehi, UT 84043</strong></p>
+      </div>
+
+      <div class="sos-card">
+        <h3>Reach us</h3>
+        <p>Laurel <a class="call" href="tel:4358514175">435-851-4175</a></p>
+        <p>Matt <a class="call" href="tel:9515534533">951-553-4533</a></p>
+        <p>We're at Fashion Place Mall in Murray, about 30 minutes away.</p>
+      </div>
+
+      <div class="sos-card">
+        <h3>Poison Control</h3>
+        <p><a class="call" href="tel:18002221222">1-800-222-1222</a></p>
+        <p>Free, 24 hours. Call them before doing anything if he swallows something he shouldn't.</p>
+      </div>
+
+      <div class="sos-card">
+        <h3>Nearest pediatric ER</h3>
+        <p><strong>Primary Children's Hospital, Lehi</strong></p>
+        <p>2250 N Miller Campus Dr, Lehi, UT 84043</p>
+        <p><a class="call" href="tel:3855311000">(385) 531-1000</a></p>
+        <p>Emergency department is open 24 hours.</p>
+      </div>
+
+      <div class="sos-card">
+        <h3>Pediatrician</h3>
+        <p>Dr. Ryan Wilcox</p>
+        <p><a class="call" href="tel:8017565290">(801) 756-5290</a></p>
+      </div>
+
+      <div class="sos-card">
+        <h3>Luke's details</h3>
+        <p>Full name <strong>Luke Aaron Mills</strong></p>
+        <p>Date of birth <strong>August 11, 2025</strong></p>
+        <p>Allergies <strong>None known</strong></p>
+        <p>Insurance <strong>Blue Cross Blue Shield</strong>, member ID <strong>ZHV 260125544</strong></p>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+      panels.forEach(p => { p.classList.remove('active'); p.hidden = true; });
+
+      tab.setAttribute('aria-selected', 'true');
+      const panel = document.getElementById(tab.getAttribute('aria-controls'));
+      panel.hidden = false;
+      panel.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
